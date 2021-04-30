@@ -166,9 +166,10 @@ def create_a_report(path_load, path_save, week):
     for row in ws.iter_cols(min_col=1, max_col=16, min_row=1, max_row=ws.max_row):
         for cel in row:
             cel.border = thin_border
-
+    # print(week)
+    # print(ws.cell(ws.max_row-1, 1).value)
     if ws.cell(ws.max_row-1, 1).value < week:
-        return print("ERROR")
+        return "Задана неделя вне диапазона текущего ОПЭ, равного {} недель в 2021 году".format(ws.cell(ws.max_row-1, 1).value)
     # построение графиков
     # график "ДИАГРАММА ИЗМЕРЯЕМЫХ ПРАМЕТРОВ ПО НЕДЕЛЯМ"
 
