@@ -1,13 +1,17 @@
 #!C:/msys64/mingw64/bin/python.exe
 import os
+import time
+
 import gi
-import openpyxl
 
 import Excel_report
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from gi.repository import Gdk
+from gi.repository import Gdk, GLib
+from threading import Timer
+
+delay_in_sec = 2
 
 whatis = lambda obj: print(type(obj), "\n\t" + "\n\t".join(dir(obj)))
 
@@ -19,6 +23,30 @@ def load_lStore(weeks):  # загрузка недель в список
     for week in range(len(weeks)):
         lStore.append([weeks[week]])
 
+
+def do_pulse():  # формирует бегущую строку в поле вывода, пока формируется отчет
+    entry_info.set_progress_pulse_step(0.1)
+    while entry_info.get_text() == "Отчет формируется":  #time.time() - now < 60
+        entry_info.progress_pulse()
+        time.sleep(0.1)
+        Gtk.main_iteration_do(False)
+
+
+def report():  # формирование отчета
+    text_return = Excel_report.create_a_report(file_location.get_filename(), save_place.get_filename(),
+                                               week_OPE[cb_week.get_active()])
+    if text_return != "Отчет успешно сформирован":
+        entry_info.set_progress_pulse_step(0)
+        entry_info.set_text(text_return)
+        entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
+        entry_info.set_progress_fraction(0)
+    else:
+        entry_info.set_progress_pulse_step(0)
+        entry_info.set_progress_fraction(0)
+        entry_info.set_text(text_return)
+        entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
+
+
 class Handler:
 
     def button_report_clicked_cb(self, button):  # обрабатывает нажатие кнопки "Сформировать отчет"
@@ -27,10 +55,10 @@ class Handler:
             save_place.set_filename("C:" + os.path.join(os.environ['HOMEPATH'], 'Desktop'))
             entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
         else:
-            entry_info.set_text("{}".format(week_OPE[cb_week.get_active()]))
-            #print("{}\n{}\n{}".format(file_location.get_filename(), save_place.get_filename(), week_OPE[cb_week.get_active()]))
-            text_return = Excel_report.create_a_report(file_location.get_filename(), save_place.get_filename(), week_OPE[cb_week.get_active()])
-            entry_info.set_text(text_return)
+            t = Timer(delay_in_sec, report)  # задержка delay_in_sec для формирования отчета, чтобы запустить бегунок do_pulse()
+            t.start()  # возвращает None
+            entry_info.set_text("Отчет формируется")
+            do_pulse()
 
     def cb_week_changed_cb(self, button):  # обрабатывает выпадающий список
         pass
@@ -68,16 +96,27 @@ button_report = abuilder.get_object("button_report")  # кнопка форми�
 save_place = abuilder.get_object("save_place")  # путь места сохранения
 file_location = abuilder.get_object("file_location")  # путь к файлу Отчет ОПЭ.xlsx
 load_lStore(week_OPE)
-# cb_week.set_model(lStore)
-# cb_week.set_entry_text_column(0)
+
 renderer_text = Gtk.CellRendererText()
 cb_week.pack_start(renderer_text, True)
 cb_week.add_attribute(renderer_text, "text", 0)
 cb_week.set_active(17)
 
+Window.set_title("Формирование отчетов по ОПЭ БКЭУ")
+Window.set_icon_from_file("icon.ico")
 Window.show_all()
-#whatis(openpyxl.open("C:/Razrab-10/python/ExcelWordIntegration/Test.xlsx"))
+# whatis(entry_info.progress_pulse())
 if __name__ == '__main__':
     button_report.set_sensitive(False)  # делает кнопку не чувствительной
-    save_place.set_filename("C:" + os.path.join(os.environ['HOMEPATH'], 'Desktop'))  # устанавливает путь по умолчанию "Рабочий стол"
+    save_place.set_filename(
+        "C:" + os.path.join(os.environ['HOMEPATH'], 'Desktop'))  # устанавливает путь по умолчанию "Рабочий стол"
+    file_location.set_filename(
+        "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020\Отчет ОПЭ.xlsx")  # устанавливает путь по умолчанию "Рабочий стол"
+    for name in file_location.get_filename().split("\\"):
+        if name == "Отчет ОПЭ.xlsx":
+            entry_info.set_text("Файл \"Отчет ОПЭ.xlsx\" успешно выбран")
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
+            button_report.set_sensitive(True)
+    if not button_report.get_sensitive():
+        entry_info.set_text("Выберите файл \"Отчет ОПЭ.xlsx\"")
     Gtk.main()
