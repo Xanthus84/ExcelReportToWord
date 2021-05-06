@@ -97,6 +97,7 @@
           <object class="GtkFileChooserButton" id="save_place">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">По умолчанию отчет сохраняется "\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020"</property>
             <property name="action">select-folder</property>
             <property name="title" translatable="yes"/>
             <signal name="file-set" handler="save_place_file_set_cb" swapped="no"/>
@@ -111,6 +112,7 @@
           <object class="GtkComboBox" id="cb_week">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">Недели ОПЭ</property>
             <property name="model">list_store</property>
             <signal name="changed" handler="cb_week_changed_cb" swapped="no"/>
           </object>
@@ -134,6 +136,7 @@
           <object class="GtkEntry" id="entry_info">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="tooltip-text" translatable="yes">Поле вывода информации</property>
             <property name="editable">False</property>
           </object>
           <packing>
@@ -148,6 +151,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Формирование отчета Word за выбранную неделю</property>
             <property name="image">image4</property>
             <property name="always-show-image">True</property>
             <signal name="clicked" handler="button_report_clicked_cb" swapped="no"/>
@@ -163,6 +167,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Открывает базовую таблицу данных</property>
             <property name="image">image1</property>
             <property name="always-show-image">True</property>
             <signal name="clicked" handler="btn_base_table_clicked_cb" swapped="no"/>
@@ -178,6 +183,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Открывает отчет за выбранную выше неделю</property>
             <property name="image">image2</property>
             <property name="always-show-image">True</property>
             <signal name="clicked" handler="btn_last_report_clicked_cb" swapped="no"/>
@@ -193,6 +199,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Открывает таблицу с графиками</property>
             <property name="image">image3</property>
             <property name="always-show-image">True</property>
             <signal name="clicked" handler="btn_open_grafic_clicked_cb" swapped="no"/>
@@ -208,6 +215,7 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
+            <property name="tooltip-text" translatable="yes">Архив погоды ближайшей базовой станции к объекту сайта РП5</property>
             <property name="image">image5</property>
             <property name="always-show-image">True</property>
             <property name="uri">https://rp5.ru/%D0%90%D1%80%D1%85%D0%B8%D0%B2_%D0%BF%D0%BE%D0%B3%D0%BE%D0%B4%D1%8B_%D0%B2_%D0%9D%D0%BE%D0%B2%D0%BE%D0%BA%D1%83%D0%B7%D0%BD%D0%B5%D1%86%D0%BA%D0%B5</property>
