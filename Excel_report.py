@@ -472,9 +472,9 @@ def create_a_report(path_load, path_save, week):
 
     # создаем автоматизированный отчет
     template.render(context)
-    template.save(path_save + '\\Еженедельный_отчет_по_ОПЭ_БКЭУ-{}.docx'.format(week))  # сохранение отчета с атоприсвоением номера недели
-    file_path = path_save + '\\Еженедельный_отчет_по_ОПЭ_БКЭУ-{}.docx'.format(week)
-    os.system("start " + file_path)
+    template.save(path_save + '\\Еженедельный отчет по ОПЭ БКЭУ-{}.docx'.format(week))  # сохранение отчета с атоприсвоением номера недели
+    file_path = path_save + '\\Еженедельный отчет по ОПЭ БКЭУ-{}.docx'.format(week)
+    os.startfile(file_path)
     return "Отчет успешно сформирован"
 
 # whatis()
