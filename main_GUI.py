@@ -1,5 +1,5 @@
 #!C:/msys64/mingw64/bin/python.exe
-import os
+#import os
 import time
 
 import gi
@@ -8,12 +8,12 @@ import Excel_report
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from gi.repository import Gdk, GLib
+from gi.repository import Gdk
 from threading import Timer
 
 delay_in_sec = 2
 
-whatis = lambda obj: print(type(obj), "\n\t" + "\n\t".join(dir(obj)))
+# whatis = lambda obj: print(type(obj), "\n\t" + "\n\t".join(dir(obj)))
 
 week_OPE = [50, 51, 52, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
             27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
@@ -52,7 +52,7 @@ class Handler:
     def button_report_clicked_cb(self, button):  # обрабатывает нажатие кнопки "Сформировать отчет"
         if save_place.get_filename() is None:
             entry_info.set_text("Выберите папку для сохранения отчета!")
-            save_place.set_filename("C:" + os.path.join(os.environ['HOMEPATH'], 'Desktop'))
+            save_place.set_filename("C:" + Excel_report.os.path.join(Excel_report.os.environ['HOMEPATH'], 'Desktop'))
             entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
         else:
             t = Timer(delay_in_sec, report)  # задержка delay_in_sec для формирования отчета, чтобы запустить бегунок do_pulse()
@@ -77,6 +77,33 @@ class Handler:
         if entry_info.get_text() != "Файл \"Отчет ОПЭ.xlsx\" успешно выбран":
             entry_info.set_text("Выберите файл \"Отчет ОПЭ.xlsx\"!")
             file_location.set_filename("C:/")
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
+
+    def btn_base_table_clicked_cb(self, button):  # открытие базовой таблицы "Отчет ОПЭ.xlsx"
+        file_path = file_location.get_filename()
+        Excel_report.os.startfile(file_path)
+        entry_info.set_text("Таблица \"Отчет ОПЭ.xlsx\" открыта!")
+        entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
+
+    def btn_last_report_clicked_cb(self, button):  # открытие отчета выбранной недели"
+        try:
+            file_path = "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020" + '\\Еженедельный отчет по ОПЭ БКЭУ-{}.docx'.format(
+                week_OPE[cb_week.get_active()])
+            Excel_report.os.startfile(file_path)
+            entry_info.set_text("Отчет за {} неделю открыт!".format(week_OPE[cb_week.get_active()]))
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
+        except FileNotFoundError:
+            entry_info.set_text("Отчет за {} неделю не существует!".format(week_OPE[cb_week.get_active()]))
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
+
+    def btn_open_grafic_clicked_cb(self, button):  # открытие таблицы с графиками"
+        try:
+            file_path = "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020" + '\\Графики.xlsx'
+            Excel_report.os.startfile(file_path)
+            entry_info.set_text("Таблица \"Графики.xlsx\" открыта!")
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
+        except FileNotFoundError:
+            entry_info.set_text("Таблица \"Графики.xlsx\" не сформирована!")
             entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
 
 
@@ -108,10 +135,12 @@ Window.show_all()
 # whatis(entry_info.progress_pulse())
 if __name__ == '__main__':
     button_report.set_sensitive(False)  # делает кнопку не чувствительной
+    # save_place.set_filename(
+    #     "C:" + Excel_report.os.path.join(Excel_report.os.environ['HOMEPATH'], 'Desktop'))  # устанавливает путь по умолчанию "Рабочий стол"
     save_place.set_filename(
-        "C:" + os.path.join(os.environ['HOMEPATH'], 'Desktop'))  # устанавливает путь по умолчанию "Рабочий стол"
+        "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020")  # устанавливает путь по умолчанию
     file_location.set_filename(
-        "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020\Отчет ОПЭ.xlsx")  # устанавливает путь по умолчанию "Рабочий стол"
+        "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020\Отчет ОПЭ.xlsx")  # устанавливает путь по умолчанию
     for name in file_location.get_filename().split("\\"):
         if name == "Отчет ОПЭ.xlsx":
             entry_info.set_text("Файл \"Отчет ОПЭ.xlsx\" успешно выбран")
