@@ -297,20 +297,22 @@ def create_a_report(path_load, path_save, week):
 
     ws.add_chart(ch5, "A{}".format(ws.max_row + 102))  # загрузка графика в ячейку
 
-    # расчет суммы выработки ГПЭГ и СМ для построения общей диаграммы
+# расчет суммы выработки ГПЭГ и СМ для построения общей диаграммы
     ws.cell(ws.max_row, 2).value = 0
     ws.cell(ws.max_row, 3).value = 0
     for i in range(2, ws.max_row + 1):
         if ws.cell(i, 1).value is None:
             ws.cell(i, 1).value = "Итого:"
+            break
         if ws.cell(i, 2).value is not None:
             ws.cell(ws.max_row, 2).value += ws.cell(i, 2).value
-            ws.cell(ws.max_row, 2).number_format = openpyxl.styles.numbers.BUILTIN_FORMATS[1]
         if ws.cell(i, 3).value is not None:
             ws.cell(ws.max_row, 3).value += ws.cell(i, 3).value
-            ws.cell(ws.max_row, 3).number_format = openpyxl.styles.numbers.BUILTIN_FORMATS[1]
+    ws.cell(ws.max_row, 3).number_format = openpyxl.styles.numbers.BUILTIN_FORMATS[1]
+    ws.cell(ws.max_row, 2).number_format = openpyxl.styles.numbers.BUILTIN_FORMATS[1]
 
-    # построение общей диаграммы выработки ГПЭГ и СМ за отчетный период
+
+# построение общей диаграммы выработки ГПЭГ и СМ за отчетный период
     chart_itog = PieChart()
     labels = Reference(ws, min_col=2, max_col=3, min_row=1, max_row=1)
     data = Reference(ws, min_col=2, max_col=3, min_row=ws.max_row, max_row=ws.max_row)
@@ -320,7 +322,7 @@ def create_a_report(path_load, path_save, week):
     chart_itog.width = 20  # ширина
     chart_itog.add_data(data, titles_from_data=True)  # загрузка данных с заголовками столбцов
     chart_itog.set_categories(labels)  # загрузка подписи оси х
-    slice = DataPoint(idx=0, explosion=20)  # разделение пирога и сдвиг на 20 пунктов
+    slice = DataPoint(idx=0, explosion=15)  # разделение пирога и сдвиг на 15 пунктов
     chart_itog.series[0].data_points = [slice]  # применение сдвига к первому значению
     ws.add_chart(chart_itog, "A{}".format(ws.max_row + 122))
 
@@ -344,28 +346,6 @@ def create_a_report(path_load, path_save, week):
     ws.add_chart(ch6, "A{}".format(ws.max_row + 142))  # загрузка графика в ячейку
 
     wb.save(path_save+'\\Графики.xlsx')  # сохранение таблицы в указанную директорию
-
-    # ------ СОХРАНЕНИЕ ГРАФИКОВ ИЗ ТАБЛИЦЫ EXCEL В ФОРМАТЕ PNG-----------------
-    # input_file = "C:/Razrab-10/python/ExcelWordIntegration/Test.xlsx"
-    # output_image = "C:/Razrab-10/python/ExcelWordIntegration/"
-    #
-    # operation = win32com.client.Dispatch("Excel.Application")
-    # operation.Visible = 0
-    # operation.DisplayAlerts = 0
-    #
-    # workbook_2 = operation.Workbooks.Open(input_file)
-    # sheet_2 = operation.Sheets(1)
-    #
-    # for x, chart in enumerate(sheet_2.Shapes):
-    #     chart.Copy()
-    #     image = ImageGrab.grabclipboard()
-    #     image.save(output_image + "{}.png".format(x), 'png')
-    #     pass
-    #
-    # workbook_2.Close(True)
-    # operation.Quit()
-    # ---------------------------------------------------------------------------- Сохранение графиков из таблицы в формате png
-
 
     # -------Генерация автоматического отчета в WORD------------------------
     template = DocxTemplate('temp6707.docx')
