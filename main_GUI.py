@@ -110,10 +110,16 @@ class Handler:
     def btn_create_presentation_clicked_cb(self, button):
         if Excel_report.os.path.exists("\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707"
                                        "-Кузнецк\Тренды\Новокузнецк-2020" + '\\Графики.xlsx'):
-            Presentation.make_presentations()
+            path_load = "\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707-Кузнецк\Тренды\Новокузнецк-2020" + '\\Графики.xlsx'
+            workbook = Excel_report.xl.load_workbook(path_load,
+                                                     data_only=True)  # открываем базу с отчетами, data_only=True - только данные (без формул)
+            ws = workbook.active  # выбираем активный лист или Графики = workbook['Графики.xlsx']
+            Presentation.make_presentations(ws)
             entry_info.set_text("Создана презентация \"Промежуточные итоги ОПЭ БКЭУ.pptx\"!")
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("green"))
         else:
             entry_info.set_text("Сначала сформируйте отчет!")
+            entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
 
 
 abuilder = Gtk.Builder()
