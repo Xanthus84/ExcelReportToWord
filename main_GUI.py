@@ -1,10 +1,11 @@
 #!C:/msys64/mingw64/bin/python.exe
-#import os
+# from os import path
 import time
 
 import gi
 
 import Excel_report
+import Presentation
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -105,6 +106,14 @@ class Handler:
         except FileNotFoundError:
             entry_info.set_text("Таблица \"Графики.xlsx\" не сформирована!")
             entry_info.modify_fg(Gtk.StateFlags.NORMAL, Gdk.color_parse("red"))
+
+    def btn_create_presentation_clicked_cb(self, button):
+        if Excel_report.os.path.exists("\\\\files.nipom.org\\res\Razrab-09\Обмен\АИП\\6707"
+                                       "-Кузнецк\Тренды\Новокузнецк-2020" + '\\Графики.xlsx'):
+            Presentation.make_presentations()
+            entry_info.set_text("Создана презентация \"Промежуточные итоги ОПЭ БКЭУ.pptx\"!")
+        else:
+            entry_info.set_text("Сначала сформируйте отчет!")
 
 
 abuilder = Gtk.Builder()
